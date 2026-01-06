@@ -1,8 +1,8 @@
 import { createRoute } from '@tanstack/react-router';
-import type { RootRoute } from '@tanstack/react-router';
+import type { rootRoute as RootRouteType } from './router';
 import { ForbiddenError, GeneralError, MaintenanceError, NotFoundError, UnauthorizedError } from '@/features/errors';
 
-export function createErrorRoutes(rootRoute: RootRoute<Record<string, unknown>>) {
+export function createErrorRoutes(rootRoute: typeof RootRouteType) {
 	// 404 错误
 	const notFoundRoute = createRoute({
 		getParentRoute: () => rootRoute,
@@ -27,14 +27,14 @@ export function createErrorRoutes(rootRoute: RootRoute<Record<string, unknown>>)
 	// 503 维护中
 	const maintenanceRoute = createRoute({
 		getParentRoute: () => rootRoute,
-		path: '/maintenance',
+		path: '/503',
 		component: MaintenanceError,
 	});
 
 	// 通用错误（500）
 	const generalErrorRoute = createRoute({
 		getParentRoute: () => rootRoute,
-		path: '/error',
+		path: '/500',
 		component: GeneralError,
 	});
 

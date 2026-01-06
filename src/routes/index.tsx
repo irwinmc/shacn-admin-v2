@@ -1,10 +1,8 @@
-import { createRootRoute, createRouter, RouterProvider } from '@tanstack/react-router';
+import { createRouter, RouterProvider } from '@tanstack/react-router';
+import { rootRoute } from './router';
 import { createMainRoutes } from './main-routes';
 import { createProtectedRoutes } from './protected-routes';
 import { createErrorRoutes } from './error-routes';
-
-// 创建根路由
-const rootRoute = createRootRoute();
 
 // 创建各类路由
 const mainRoutes = createMainRoutes(rootRoute);

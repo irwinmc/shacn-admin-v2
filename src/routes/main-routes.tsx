@@ -1,9 +1,9 @@
 import { createRoute } from '@tanstack/react-router';
-import type { RootRoute } from '@tanstack/react-router';
+import type { rootRoute as RootRouteType } from './router';
 import { Login } from '@/features/auth/Login';
 import { Register } from '@/features/auth/Register';
 
-export function createMainRoutes(rootRoute: RootRoute<Record<string, unknown>>) {
+export function createMainRoutes(rootRoute: typeof RootRouteType) {
 	// 登录路由
 	const loginRoute = createRoute({
 		getParentRoute: () => rootRoute,
