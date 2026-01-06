@@ -1,7 +1,6 @@
 import { createRoute } from '@tanstack/react-router';
 import type { rootRoute as RootRouteType } from './router';
-import { Login } from '@/features/auth/Login';
-import { Register } from '@/features/auth/Register';
+import { Login, Register, ForgotPassword } from '@/features/auth';
 
 export function createMainRoutes(rootRoute: typeof RootRouteType) {
 	// 登录路由
@@ -18,5 +17,12 @@ export function createMainRoutes(rootRoute: typeof RootRouteType) {
 		component: Register,
 	});
 
-	return [loginRoute, registerRoute];
+	// 忘记密码路由
+	const forgotPasswordRoute = createRoute({
+		getParentRoute: () => rootRoute,
+		path: '/forgot-password',
+		component: ForgotPassword,
+	});
+
+	return [loginRoute, registerRoute, forgotPasswordRoute];
 }
