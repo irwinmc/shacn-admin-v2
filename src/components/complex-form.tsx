@@ -42,19 +42,8 @@ const addons = [
 ] as const;
 
 const formSchema = z.object({
-	plan: z
-		.string({
-			required_error: 'Please select a subscription plan',
-		})
-		.min(1, 'Please select a subscription plan')
-		.refine(value => value === 'basic' || value === 'pro', {
-			message: 'Invalid plan selection. Please choose Basic or Pro',
-		}),
-	billingPeriod: z
-		.string({
-			required_error: 'Please select a billing period',
-		})
-		.min(1, 'Please select a billing period'),
+	plan: z.enum(['basic', 'pro']),
+	billingPeriod: z.string().min(1, 'Please select a billing period'),
 	addons: z
 		.array(z.string())
 		.min(1, 'Please select at least one add-on')
