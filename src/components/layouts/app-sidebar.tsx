@@ -6,7 +6,7 @@ import { NavUser } from './nav-user';
 
 export function AppSidebar() {
 	return (
-		<Sidebar variant="floating">
+		<Sidebar collapsible="icon" variant="floating">
 			<SidebarHeader>
 				<AppTitle />
 			</SidebarHeader>
