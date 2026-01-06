@@ -1,17 +1,11 @@
-import { toast } from 'sonner';
-import { Button } from '@/components/ui/button';
+import { LoginForm } from './components/login-form';
 
 export function Login() {
-	const onClick = () => {
-		toast('Event has been created.');
-	};
-
 	return (
-		<div>
-			<h1>登录</h1>
-			<Button variant="outline" onClick={onClick}>
-				登录
-			</Button>
+		<div className="bg-muted flex min-h-svh flex-col items-center justify-center p-6 md:p-10">
+			<div className="w-full max-w-sm md:max-w-4xl">
+				<LoginForm />
+			</div>
 		</div>
 	);
 }

@@ -2,7 +2,6 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } fr
 import { AppTitle } from './app-title';
 import { sidebarData } from './data/sidebar-data';
 import { NavGroup } from './nav-group';
-import { NavFooter } from './nav-footer';
 import { NavUser } from './nav-user';
 
 export function AppSidebar() {
@@ -17,7 +16,6 @@ export function AppSidebar() {
 				))}
 			</SidebarContent>
 			<SidebarFooter>
-				<NavFooter />
 				<NavUser user={sidebarData.user} />
 			</SidebarFooter>
 			<SidebarRail />
