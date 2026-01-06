@@ -1,4 +1,4 @@
-import { createRoute } from '@tanstack/react-router';
+import { createRoute, redirect } from '@tanstack/react-router';
 import type { rootRoute as RootRouteType } from './router';
 import { ForbiddenError, GeneralError, MaintenanceError, NotFoundError, UnauthorizedError } from '@/features/errors';
 
@@ -38,5 +38,25 @@ export function createErrorRoutes(rootRoute: typeof RootRouteType) {
 		component: GeneralError,
 	});
 
-	return [notFoundRoute, unauthorizedRoute, forbiddenRoute, maintenanceRoute, generalErrorRoute];
+	// 捕获所有未匹配的路由（404）
+	const notFoundWildcardRoute = createRoute({
+		getParentRoute: () => rootRoute,
+		path: '/$',
+		beforeLoad: () => {
+			throw redirect({
+				to: '/404',
+				replace: true,
+			});
+		},
+		component: NotFoundError,
+	});
+
+	return [
+		notFoundRoute,
+		unauthorizedRoute,
+		forbiddenRoute,
+		maintenanceRoute,
+		generalErrorRoute,
+		notFoundWildcardRoute,
+	];
 }
