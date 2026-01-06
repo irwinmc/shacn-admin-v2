@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { DayPicker, getDefaultClassNames, type DayButton } from 'react-day-picker';
 
-import { cn } from '@/shared/lib/utils';
+import { cn } from '@/lib/utils';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { IconChevronLeft, IconChevronRight, IconChevronDown } from '@tabler/icons-react';
 
