@@ -6,7 +6,7 @@
 import axios from 'axios';
 import type { AxiosInstance, AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { API_CONFIG } from '@/constants/config';
-import { useAuthStore } from '@/stores/authStore';
+import { useAuthStore } from '@/stores/auth-store';
 
 /**
  * 创建 Axios 实例
@@ -24,10 +24,10 @@ export const apiInstance: AxiosInstance = axios.create({
  */
 apiInstance.interceptors.request.use(
 	(config: InternalAxiosRequestConfig) => {
-		const { token } = useAuthStore.getState();
+		const { accessToken } = useAuthStore.getState();
 
-		if (token) {
-			config.headers.Authorization = `Bearer ${token}`;
+		if (accessToken) {
+			config.headers.Authorization = `Bearer ${accessToken}`;
 		}
 
 		return config;

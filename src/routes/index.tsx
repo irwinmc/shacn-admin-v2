@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router';
-import { ProtectedRoute } from './ProtectedRoute';
+import { ProtectedRoute } from './protected-route';
 
-import { DashboardLayout } from '@/components/layouts/DashboardLayout';
+import { AuthenticatedLayout } from '@/components/layouts/authenticated-layout';
 import { Login } from '@/features/auth/Login';
 import { Register } from '@/features/auth/Register';
 
@@ -16,7 +16,7 @@ export function AppRoutes() {
 					path="/"
 					element={
 						<ProtectedRoute>
-							<DashboardLayout />
+							<AuthenticatedLayout />
 						</ProtectedRoute>
 					}
 				>

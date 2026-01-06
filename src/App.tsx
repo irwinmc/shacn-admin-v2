@@ -10,7 +10,7 @@ export function App() {
 	return (
 		<QueryClientProvider client={queryClient}>
 			<AppRoutes />
-			<Toaster />
+			<Toaster position="top-center" />
 		</QueryClientProvider>
 	);
 }

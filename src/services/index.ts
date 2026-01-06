@@ -7,4 +7,4 @@
 export { apiInstance, default as api, formatError } from './api';
 
 // Query Client
-export { queryClient, default as qc } from './queryClient';
+export { queryClient, default as qc } from './query-client';

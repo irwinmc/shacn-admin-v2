@@ -1,13 +1,19 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { User } from '../types/user.types';
 import { STORAGE_KEYS } from '../constants';
 
+interface AuthUser {
+	id: number;
+	username: string;
+	created_at: string;
+	updated_at: string;
+}
+
 interface AuthState {
-	user: User | null;
-	token: string | null;
-	setUser: (user: User | null) => void;
-	setToken: (token: string | null) => void;
+	user: AuthUser | null;
+	accessToken: string;
+	setUser: (user: AuthUser | null) => void;
+	setAccessToken: (accessToken: string) => void;
 	reset: () => void;
 }
 
@@ -19,22 +25,22 @@ export const useAuthStore = create<AuthState>()(
 	persist(
 		set => ({
 			user: null,
-			token: null,
+			accessToken: '',
 
 			setUser: user =>
 				set({
 					user,
 				}),
 
-			setToken: token =>
+			setAccessToken: accessToken =>
 				set({
-					token,
+					accessToken,
 				}),
 
 			reset: () => {
 				set({
 					user: null,
-					token: null,
+					accessToken: '',
 				});
 			},
 		}),
@@ -43,8 +49,3 @@ export const useAuthStore = create<AuthState>()(
 		}
 	)
 );
-
-/**
- * Selector: 检查用户是否已认证
- */
-export const selectIsAuthenticated = (state: AuthState) => !!state.user && !!state.token;
