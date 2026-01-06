@@ -25,7 +25,7 @@ export const useAuthStore = create<AuthState>()(
 	persist(
 		set => ({
 			user: null,
-			accessToken: '',
+			accessToken: 'access-token-placeholder',
 
 			setUser: user =>
 				set({
