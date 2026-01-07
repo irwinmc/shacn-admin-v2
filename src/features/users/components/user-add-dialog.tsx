@@ -18,7 +18,7 @@ import { PasswordInput } from '@/components/password-input';
 import { SelectDropdown } from '@/components/select-dropdown';
 import { roles } from '../data';
 import { addUserFormSchema, type AddUserFormData } from '../schemas';
-import { useUsers } from './users-provider';
+import { useUsers } from '../context';
 
 type AddUserDialogProps = {
 	open: boolean;
@@ -76,11 +76,7 @@ export function AddUserDialog({ open, onOpenChange }: AddUserDialogProps) {
 								<TooltipProvider>
 									<Tooltip open={!!errors.firstName} delayDuration={0}>
 										<TooltipTrigger asChild>
-											<Input
-												placeholder="John"
-												autoComplete="off"
-												{...register('firstName')}
-											/>
+											<Input placeholder="John" autoComplete="off" {...register('firstName')} />
 										</TooltipTrigger>
 										{errors.firstName && (
 											<TooltipContent side="top">{errors.firstName.message}</TooltipContent>
@@ -97,11 +93,7 @@ export function AddUserDialog({ open, onOpenChange }: AddUserDialogProps) {
 								<TooltipProvider>
 									<Tooltip open={!!errors.lastName} delayDuration={0}>
 										<TooltipTrigger asChild>
-											<Input
-												placeholder="Doe"
-												autoComplete="off"
-												{...register('lastName')}
-											/>
+											<Input placeholder="Doe" autoComplete="off" {...register('lastName')} />
 										</TooltipTrigger>
 										{errors.lastName && (
 											<TooltipContent side="top">{errors.lastName.message}</TooltipContent>
@@ -175,9 +167,7 @@ export function AddUserDialog({ open, onOpenChange }: AddUserDialogProps) {
 										value,
 									}))}
 								/>
-								{errors.role && (
-									<span className="text-sm text-destructive">{errors.role.message}</span>
-								)}
+								{errors.role && <span className="text-sm text-destructive">{errors.role.message}</span>}
 							</div>
 						</div>
 

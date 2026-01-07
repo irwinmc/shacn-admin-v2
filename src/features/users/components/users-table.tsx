@@ -37,7 +37,7 @@ export function UsersTable({ data }: DataTableProps) {
 	// eslint-disable-next-line react-hooks/incompatible-library
 	const table = useReactTable({
 		data,
-		columns: columns as ColumnDef<typeof data[0]>[],
+		columns: columns as ColumnDef<(typeof data)[0]>[],
 		state: {
 			sorting,
 			pagination,
@@ -93,25 +93,17 @@ export function UsersTable({ data }: DataTableProps) {
 					<TableHeader>
 						{table.getHeaderGroups().map(headerGroup => (
 							<TableRow key={headerGroup.id} className="group/row">
-								{headerGroup.headers.map(header => {
-									// eslint-disable-next-line @typescript-eslint/no-explicit-any
-									const { className, thClassName } = (header.column.columnDef.meta as any) || {};
-									return (
-										<TableHead
-											key={header.id}
-											colSpan={header.colSpan}
-											className={cn(
-												'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
-												className,
-												thClassName
-											)}
-										>
-											{header.isPlaceholder
-												? null
-												: flexRender(header.column.columnDef.header, header.getContext())}
-										</TableHead>
-									);
-								})}
+								{headerGroup.headers.map(header => (
+									<TableHead
+										key={header.id}
+										colSpan={header.colSpan}
+										className="bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted"
+									>
+										{header.isPlaceholder
+											? null
+											: flexRender(header.column.columnDef.header, header.getContext())}
+									</TableHead>
+								))}
 							</TableRow>
 						))}
 					</TableHeader>
@@ -123,22 +115,14 @@ export function UsersTable({ data }: DataTableProps) {
 									data-state={row.getIsSelected() && 'selected'}
 									className="group/row"
 								>
-									{row.getVisibleCells().map(cell => {
-										// eslint-disable-next-line @typescript-eslint/no-explicit-any
-										const { className, tdClassName } = (cell.column.columnDef.meta as any) || {};
-										return (
-											<TableCell
-												key={cell.id}
-												className={cn(
-													'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
-													className,
-													tdClassName
-												)}
-											>
-												{flexRender(cell.column.columnDef.cell, cell.getContext())}
-											</TableCell>
-										);
-									})}
+									{row.getVisibleCells().map(cell => (
+										<TableCell
+											key={cell.id}
+											className="bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted"
+										>
+											{flexRender(cell.column.columnDef.cell, cell.getContext())}
+										</TableCell>
+									))}
 								</TableRow>
 							))
 						) : (

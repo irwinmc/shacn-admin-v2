@@ -18,7 +18,7 @@ import { PasswordInput } from '@/components/password-input';
 import { SelectDropdown } from '@/components/select-dropdown';
 import { roles } from '../data';
 import { editUserFormSchema, type EditUserFormData, type User } from '../schemas';
-import { useUsers } from './users-provider';
+import { useUsers } from '../context';
 
 type EditUserDialogProps = {
 	currentRow?: User;
@@ -79,9 +79,7 @@ export function EditUserDialog({ currentRow, open, onOpenChange }: EditUserDialo
 			<DialogContent className="sm:max-w-lg">
 				<DialogHeader className="text-start">
 					<DialogTitle>Edit User</DialogTitle>
-					<DialogDescription>
-						Update the user here. Click save when you&apos;re done.
-					</DialogDescription>
+					<DialogDescription>Update the user here. Click save when you&apos;re done.</DialogDescription>
 				</DialogHeader>
 				<div className="h-105 w-[calc(100%+0.75rem)] overflow-y-auto py-1 pe-3">
 					<form id="edit-user-form" onSubmit={handleSubmit(onSubmit)} className="space-y-4 px-0.5">
@@ -92,11 +90,7 @@ export function EditUserDialog({ currentRow, open, onOpenChange }: EditUserDialo
 								<TooltipProvider>
 									<Tooltip open={!!errors.firstName} delayDuration={0}>
 										<TooltipTrigger asChild>
-											<Input
-												placeholder="John"
-												autoComplete="off"
-												{...register('firstName')}
-											/>
+											<Input placeholder="John" autoComplete="off" {...register('firstName')} />
 										</TooltipTrigger>
 										{errors.firstName && (
 											<TooltipContent side="top">{errors.firstName.message}</TooltipContent>
@@ -113,11 +107,7 @@ export function EditUserDialog({ currentRow, open, onOpenChange }: EditUserDialo
 								<TooltipProvider>
 									<Tooltip open={!!errors.lastName} delayDuration={0}>
 										<TooltipTrigger asChild>
-											<Input
-												placeholder="Doe"
-												autoComplete="off"
-												{...register('lastName')}
-											/>
+											<Input placeholder="Doe" autoComplete="off" {...register('lastName')} />
 										</TooltipTrigger>
 										{errors.lastName && (
 											<TooltipContent side="top">{errors.lastName.message}</TooltipContent>
@@ -191,9 +181,7 @@ export function EditUserDialog({ currentRow, open, onOpenChange }: EditUserDialo
 										value,
 									}))}
 								/>
-								{errors.role && (
-									<span className="text-sm text-destructive">{errors.role.message}</span>
-								)}
+								{errors.role && <span className="text-sm text-destructive">{errors.role.message}</span>}
 							</div>
 						</div>
 
@@ -205,7 +193,7 @@ export function EditUserDialog({ currentRow, open, onOpenChange }: EditUserDialo
 									<Tooltip open={!!errors.password} delayDuration={0}>
 										<TooltipTrigger asChild>
 											<PasswordInput
-												placeholder="e.g., S3cur3P@ssw0rd (leave empty to keep current)"
+												placeholder="e.g., S3cur3P@ssw0rd"
 												{...register('password')}
 											/>
 										</TooltipTrigger>

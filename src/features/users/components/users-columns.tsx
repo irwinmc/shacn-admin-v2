@@ -1,13 +1,14 @@
+import type { ColumnDef } from '@tanstack/react-table';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { DataTableColumnHeader } from '@/components/data-table';
 import { LongText } from '@/components/long-text';
 import { callTypes, roles } from '../data';
+import { type User } from '../schemas';
 import { DataTableRowActions } from './data-table-row-actions';
-import type { UserColumnDef } from '../types/columns';
 
-export const usersColumns: UserColumnDef[] = [
+export const usersColumns: ColumnDef<User>[] = [
 	{
 		id: 'select',
 		header: ({ table }) => (
@@ -18,9 +19,6 @@ export const usersColumns: UserColumnDef[] = [
 				className="translate-y-[2px]"
 			/>
 		),
-		meta: {
-			className: cn('max-md:sticky start-0 z-10 rounded-tl-[inherit]'),
-		},
 		cell: ({ row }) => (
 			<Checkbox
 				checked={row.getIsSelected()}
@@ -36,9 +34,6 @@ export const usersColumns: UserColumnDef[] = [
 		accessorKey: 'username',
 		header: ({ column }) => <DataTableColumnHeader column={column} title="Username" />,
 		cell: ({ row }) => <LongText className="max-w-36 ps-3">{row.getValue('username')}</LongText>,
-		meta: {
-			className: cn('ps-0.5 max-md:sticky start-6 @4xl/content:table-cell'),
-		},
 		enableHiding: false,
 	},
 	{
@@ -49,7 +44,6 @@ export const usersColumns: UserColumnDef[] = [
 			const fullName = `${firstName} ${lastName}`;
 			return <LongText className="max-w-36">{fullName}</LongText>;
 		},
-		meta: { className: 'w-36' },
 	},
 	{
 		accessorKey: 'email',

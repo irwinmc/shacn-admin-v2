@@ -44,23 +44,24 @@ const baseUserFormSchema = z.object({
 });
 
 /** 添加用户表单验证（密码必填） */
-export const addUserFormSchema = baseUserFormSchema.extend({
-	password: z.string().min(1, 'Password is required.'),
-	confirmPassword: z.string().min(1, 'Confirm Password is required.'),
-})
-	.refine((data) => data.password.length >= 8, {
+export const addUserFormSchema = baseUserFormSchema
+	.extend({
+		password: z.string().min(1, 'Password is required.'),
+		confirmPassword: z.string().min(1, 'Confirm Password is required.'),
+	})
+	.refine(data => data.password.length >= 8, {
 		message: 'Password must be at least 8 characters long.',
 		path: ['password'],
 	})
-	.refine((data) => /[a-z]/.test(data.password), {
+	.refine(data => /[a-z]/.test(data.password), {
 		message: 'Password must contain at least one lowercase letter.',
 		path: ['password'],
 	})
-	.refine((data) => /\d/.test(data.password), {
+	.refine(data => /\d/.test(data.password), {
 		message: 'Password must contain at least one number.',
 		path: ['password'],
 	})
-	.refine((data) => data.password === data.confirmPassword, {
+	.refine(data => data.password === data.confirmPassword, {
 		message: "Passwords don't match.",
 		path: ['confirmPassword'],
 	});
@@ -68,37 +69,50 @@ export const addUserFormSchema = baseUserFormSchema.extend({
 export type AddUserFormData = z.infer<typeof addUserFormSchema>;
 
 /** 编辑用户表单验证（密码可选） */
-export const editUserFormSchema = baseUserFormSchema.extend({
-	password: z.string().optional(),
-	confirmPassword: z.string().optional(),
-})
-	.refine((data) => {
-		if (!data.password) return true;
-		return data.password.length >= 8;
-	}, {
-		message: 'Password must be at least 8 characters long.',
-		path: ['password'],
+export const editUserFormSchema = baseUserFormSchema
+	.extend({
+		password: z.string().optional(),
+		confirmPassword: z.string().optional(),
 	})
-	.refine((data) => {
-		if (!data.password) return true;
-		return /[a-z]/.test(data.password);
-	}, {
-		message: 'Password must contain at least one lowercase letter.',
-		path: ['password'],
-	})
-	.refine((data) => {
-		if (!data.password) return true;
-		return /\d/.test(data.password);
-	}, {
-		message: 'Password must contain at least one number.',
-		path: ['password'],
-	})
-	.refine((data) => {
-		if (!data.password) return true;
-		return data.password === data.confirmPassword;
-	}, {
-		message: "Passwords don't match.",
-		path: ['confirmPassword'],
-	});
+	.refine(
+		data => {
+			if (!data.password) return true;
+			return data.password.length >= 8;
+		},
+		{
+			message: 'Password must be at least 8 characters long.',
+			path: ['password'],
+		}
+	)
+	.refine(
+		data => {
+			if (!data.password) return true;
+			return /[a-z]/.test(data.password);
+		},
+		{
+			message: 'Password must contain at least one lowercase letter.',
+			path: ['password'],
+		}
+	)
+	.refine(
+		data => {
+			if (!data.password) return true;
+			return /\d/.test(data.password);
+		},
+		{
+			message: 'Password must contain at least one number.',
+			path: ['password'],
+		}
+	)
+	.refine(
+		data => {
+			if (!data.password) return true;
+			return data.password === data.confirmPassword;
+		},
+		{
+			message: "Passwords don't match.",
+			path: ['confirmPassword'],
+		}
+	);
 
 export type EditUserFormData = z.infer<typeof editUserFormSchema>;

@@ -1,7 +1,7 @@
 import { UsersPrimaryButtons } from '../components/users-primary-buttons';
-import { UsersProvider } from '../components/users-provider';
 import { UsersTable } from '../components/users-table';
 import { UsersDialogs } from '../components/users-dialogs';
+import { UsersProvider } from '../context';
 import { users } from '../data';
 
 export const Users = () => {
