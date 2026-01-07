@@ -1,4 +1,4 @@
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } from '@/components/ui/sidebar';
+import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader } from '@/components/ui/sidebar';
 import { AppTitle } from './app-title';
 import { sidebarData } from './data/sidebar-data';
 import { NavGroup } from './nav-group';
@@ -6,7 +6,7 @@ import { NavUser } from './nav-user';
 
 export function AppSidebar() {
 	return (
-		<Sidebar collapsible="icon" variant="floating">
+		<Sidebar collapsible="icon" variant="inset">
 			<SidebarHeader>
 				<AppTitle />
 			</SidebarHeader>
@@ -18,7 +18,6 @@ export function AppSidebar() {
 			<SidebarFooter>
 				<NavUser user={sidebarData.user} />
 			</SidebarFooter>
-			<SidebarRail />
 		</Sidebar>
 	);
 }

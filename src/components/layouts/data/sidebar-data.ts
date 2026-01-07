@@ -76,6 +76,11 @@ export const sidebarData: SidebarData = {
 					url: '/errors',
 					icon: Bug,
 				},
+			],
+		},
+		{
+			title: 'Other',
+			items: [
 				{
 					title: 'Settings',
 					url: '/settings',
