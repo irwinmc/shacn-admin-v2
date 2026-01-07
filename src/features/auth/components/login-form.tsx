@@ -1,16 +1,46 @@
+import { useRouter } from '@tanstack/react-router';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { GalleryVerticalEnd } from 'lucide-react';
+
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useAuthStore } from '@/stores/auth-store';
+
+import { loginSchema, type LoginFormData } from '../schemas';
 
 export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) {
+	const router = useRouter();
+	const { setAccessToken } = useAuthStore();
+
+	const {
+		register,
+		handleSubmit,
+		formState: { errors },
+	} = useForm<LoginFormData>({
+		resolver: zodResolver(loginSchema),
+		defaultValues: {
+			email: 'test@example.com',
+			password: 'password',
+		},
+	});
+
+	const onSubmit = (data: LoginFormData) => {
+		console.log(data);
+
+		// 这里先模拟登录成功
+		setAccessToken('mock-token');
+		router.navigate({ to: '/' });
+	};
+
 	return (
 		<div className={cn('flex flex-col gap-6', className)} {...props}>
 			<Card className="overflow-hidden p-0">
 				<CardContent className="grid p-0 md:grid-cols-2">
-					<form className="p-6 md:p-8" action="/dashboard">
+					<form className="p-6 md:p-8" onSubmit={handleSubmit(onSubmit)}>
 						<div className="flex flex-col gap-6">
 							<div className="flex justify-center mb-2">
 								<a href="/" className="flex items-center gap-2 font-medium">
@@ -30,9 +60,10 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
 									id="email"
 									type="email"
 									placeholder="test@example.com"
-									defaultValue="test@example.com"
-									required
+									{...register('email')}
+									aria-invalid={!!errors.email}
 								/>
+								{errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
 							</div>
 							<div className="grid gap-3">
 								<div className="flex items-center">
@@ -44,7 +75,15 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
 										Forgot your password?
 									</a>
 								</div>
-								<Input id="password" type="password" defaultValue="password" required />
+								<Input
+									id="password"
+									type="password"
+									{...register('password')}
+									aria-invalid={!!errors.password}
+								/>
+								{errors.password && (
+									<p className="text-sm text-destructive">{errors.password.message}</p>
+								)}
 							</div>
 							<Button type="submit" className="w-full cursor-pointer">
 								Login

@@ -21,21 +21,14 @@ export function createProtectedRoutes(rootRoute: typeof RootRouteType) {
 		},
 	});
 
-	// 首页
+	// 首页（Dashboard）
 	const indexRoute = createRoute({
 		getParentRoute: () => protectedRoute,
 		path: '/',
-		component: () => <div>Home</div>,
-	});
-
-	// Dashboard 路由
-	const dashboardRoute = createRoute({
-		getParentRoute: () => protectedRoute,
-		path: '/dashboard',
 		component: Dashboard,
 	});
 
 	return {
-		protectedRoute: protectedRoute.addChildren([indexRoute, dashboardRoute]),
+		protectedRoute: protectedRoute.addChildren([indexRoute]),
 	};
 }
