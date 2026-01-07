@@ -1,7 +1,7 @@
 import { Outlet } from '@tanstack/react-router';
-import { cn } from '@/lib/utils';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/layouts/app-sidebar';
+import { SiteHeader } from '@/components/layouts/site-header';
 import { SkipToMain } from '@/components/skip-to-main';
 
 export function AuthenticatedLayout() {
@@ -9,20 +9,15 @@ export function AuthenticatedLayout() {
 		<SidebarProvider>
 			<SkipToMain />
 			<AppSidebar />
-			<SidebarInset
-				className={cn(
-					// Set content container, so we can use container queries
-					'@container/content',
-
-					// If layout is fixed, set the height
-					// to 100svh to prevent overflow
-					'has-data-[layout=fixed]:h-svh',
-
-					// If layout is fixed and sidebar is inset,
-					// set the height to 100svh - spacing (total margins) to prevent overflow
-					'peer-data-[variant=inset]:has-data-[layout=fixed]:h-[calc(100svh-(var(--spacing)*4))]'
-				)}
-			>
+			<SidebarInset>
+				<SiteHeader />
+				<div className="flex flex-1 flex-col">
+					<div className="@container/main flex flex-1 flex-col gap-2">
+						<div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+							<Outlet />
+						</div>
+					</div>
+				</div>
 				<Outlet />
 			</SidebarInset>
 		</SidebarProvider>
