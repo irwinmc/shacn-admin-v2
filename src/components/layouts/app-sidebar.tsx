@@ -3,10 +3,11 @@ import { AppTitle } from './app-title';
 import { sidebarData } from './data/sidebar-data';
 import { NavGroup } from './nav-group';
 import { NavUser } from './nav-user';
+import { LAYOUT_CONFIG } from '@/constants/config';
 
 export function AppSidebar() {
 	return (
-		<Sidebar collapsible="icon" variant="inset">
+		<Sidebar collapsible={LAYOUT_CONFIG.SIDEBAR_COLLAPSIBLE} variant={LAYOUT_CONFIG.SIDEBAR_VARIANT}>
 			<SidebarHeader>
 				<AppTitle />
 			</SidebarHeader>

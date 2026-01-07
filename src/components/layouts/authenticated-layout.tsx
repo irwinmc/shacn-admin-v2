@@ -18,7 +18,6 @@ export function AuthenticatedLayout() {
 						</div>
 					</div>
 				</div>
-				<Outlet />
 			</SidebarInset>
 		</SidebarProvider>
 	);

@@ -5,6 +5,11 @@ export const APP_CONFIG = {
 	AUTHOR: 'Zea Ops Team',
 } as const;
 
+export const LAYOUT_CONFIG = {
+	SIDEBAR_COLLAPSIBLE: 'icon', // "icon" | "none" | "offExamples" | undefined
+	SIDEBAR_VARIANT: 'inset', // "inset" | "sidebar" | "floating" | undefined
+} as const;
+
 export const API_CONFIG = {
 	BASE_URL: import.meta.env.VITE_API_URL,
 	TIMEOUT: 30000,
