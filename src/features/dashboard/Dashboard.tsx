@@ -1,4 +1,5 @@
 import { SectionCards } from './components/section-cards';
+import { ChartAreaInteractive } from './components/chart-area-interactive';
 
 export const Dashboard = () => {
 	return (
@@ -12,6 +13,7 @@ export const Dashboard = () => {
 			</div>
 			<div className="px-4 lg:px-6 space-y-6">
 				<SectionCards />
+				<ChartAreaInteractive />
 			</div>
 		</>
 	);
