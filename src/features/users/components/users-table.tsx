@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
 	type SortingState,
 	type VisibilityState,
+	type ColumnFiltersState,
+	type PaginationState,
 	flexRender,
 	getCoreRowModel,
 	getFacetedRowModel,
@@ -12,7 +14,6 @@ import {
 	useReactTable,
 } from '@tanstack/react-table';
 import { cn } from '@/lib/utils';
-import { type NavigateFn, useTableUrlState } from '@/hooks/use-table-url-state';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { DataTablePagination, DataTableToolbar } from '@/components/data-table';
 import { roles } from '../data';
@@ -22,34 +23,15 @@ import { usersColumns as columns } from './users-columns';
 
 type DataTableProps = {
 	data: User[];
-	search: Record<string, unknown>;
-	navigate: NavigateFn;
 };
 
-export function UsersTable({ data, search, navigate }: DataTableProps) {
+export function UsersTable({ data }: DataTableProps) {
 	// Local UI-only states
 	const [rowSelection, setRowSelection] = useState({});
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 	const [sorting, setSorting] = useState<SortingState>([]);
-
-	// Local state management for table (uncomment to use local-only state, not synced with URL)
-	// const [columnFilters, onColumnFiltersChange] = useState<ColumnFiltersState>([])
-	// const [pagination, onPaginationChange] = useState<PaginationState>({ pageIndex: 0, pageSize: 10 })
-
-	// Synced with URL states (keys/defaults mirror users route search schema)
-	const { columnFilters, onColumnFiltersChange, pagination, onPaginationChange, ensurePageInRange } =
-		useTableUrlState({
-			search,
-			navigate,
-			pagination: { defaultPage: 1, defaultPageSize: 10 },
-			globalFilter: { enabled: false },
-			columnFilters: [
-				// username per-column text filter
-				{ columnId: 'username', searchKey: 'username', type: 'string' },
-				{ columnId: 'status', searchKey: 'status', type: 'array' },
-				{ columnId: 'role', searchKey: 'role', type: 'array' },
-			],
-		});
+	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+	const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 10 });
 
 	// eslint-disable-next-line react-hooks/incompatible-library
 	const table = useReactTable({
@@ -63,8 +45,8 @@ export function UsersTable({ data, search, navigate }: DataTableProps) {
 			columnVisibility,
 		},
 		enableRowSelection: true,
-		onPaginationChange,
-		onColumnFiltersChange,
+		onPaginationChange: setPagination,
+		onColumnFiltersChange: setColumnFilters,
 		onRowSelectionChange: setRowSelection,
 		onSortingChange: setSorting,
 		onColumnVisibilityChange: setColumnVisibility,
@@ -75,10 +57,6 @@ export function UsersTable({ data, search, navigate }: DataTableProps) {
 		getFacetedRowModel: getFacetedRowModel(),
 		getFacetedUniqueValues: getFacetedUniqueValues(),
 	});
-
-	useEffect(() => {
-		ensurePageInRange(table.getPageCount());
-	}, [table, ensurePageInRange]);
 
 	return (
 		<div

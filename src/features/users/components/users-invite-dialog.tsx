@@ -12,9 +12,10 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from '@/components/ui/dialog';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { SelectDropdown } from '@/components/select-dropdown';
 import { roles } from '../data';
 
@@ -34,13 +35,19 @@ type UserInviteDialogProps = {
 };
 
 export function UsersInviteDialog({ open, onOpenChange }: UserInviteDialogProps) {
-	const form = useForm<UserInviteForm>({
+	const {
+		register,
+		handleSubmit,
+		formState: { errors },
+		reset,
+		setValue,
+	} = useForm<UserInviteForm>({
 		resolver: zodResolver(formSchema),
 		defaultValues: { email: '', role: '', desc: '' },
 	});
 
 	const onSubmit = (values: UserInviteForm) => {
-		form.reset();
+		reset();
 		console.log(values);
 		onOpenChange(false);
 	};
@@ -49,7 +56,7 @@ export function UsersInviteDialog({ open, onOpenChange }: UserInviteDialogProps)
 		<Dialog
 			open={open}
 			onOpenChange={state => {
-				form.reset();
+				reset();
 				onOpenChange(state);
 			}}
 		>
@@ -63,59 +70,52 @@ export function UsersInviteDialog({ open, onOpenChange }: UserInviteDialogProps)
 						their access level.
 					</DialogDescription>
 				</DialogHeader>
-				<Form {...form}>
-					<form id="user-invite-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-						<FormField
-							control={form.control}
-							name="email"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Email</FormLabel>
-									<FormControl>
-										<Input type="email" placeholder="eg: john.doe@gmail.com" {...field} />
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-						<FormField
-							control={form.control}
-							name="role"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Role</FormLabel>
-									<SelectDropdown
-										defaultValue={field.value}
-										onValueChange={field.onChange}
-										placeholder="Select a role"
-										items={roles.map(({ label, value }) => ({
-											label,
-											value,
-										}))}
+				<form id="user-invite-form" onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+					<div className="grid gap-3">
+						<Label htmlFor="email">Email</Label>
+						<TooltipProvider>
+							<Tooltip open={!!errors.email} delayDuration={0}>
+								<TooltipTrigger asChild>
+									<Input
+										id="email"
+										type="email"
+										placeholder="eg: john.doe@gmail.com"
+										{...register('email')}
 									/>
-									<FormMessage />
-								</FormItem>
-							)}
+								</TooltipTrigger>
+								{errors.email && (
+									<TooltipContent side="top">{errors.email.message}</TooltipContent>
+								)}
+							</Tooltip>
+						</TooltipProvider>
+					</div>
+
+					<div className="grid gap-3">
+						<Label htmlFor="role">Role</Label>
+						<SelectDropdown
+							defaultValue=""
+							onValueChange={value => setValue('role', value)}
+							placeholder="Select a role"
+							items={roles.map(({ label, value }) => ({
+								label,
+								value,
+							}))}
 						/>
-						<FormField
-							control={form.control}
-							name="desc"
-							render={({ field }) => (
-								<FormItem className="">
-									<FormLabel>Description (optional)</FormLabel>
-									<FormControl>
-										<Textarea
-											className="resize-none"
-											placeholder="Add a personal note to your invitation (optional)"
-											{...field}
-										/>
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
+						{errors.role && (
+							<span className="text-sm text-destructive">{errors.role.message}</span>
+						)}
+					</div>
+
+					<div className="grid gap-3">
+						<Label htmlFor="desc">Description (optional)</Label>
+						<Textarea
+							id="desc"
+							className="resize-none"
+							placeholder="Add a personal note to your invitation (optional)"
+							{...register('desc')}
 						/>
-					</form>
-				</Form>
+					</div>
+				</form>
 				<DialogFooter className="gap-y-2">
 					<DialogClose asChild>
 						<Button variant="outline">Cancel</Button>
