@@ -1,6 +1,5 @@
 'use client';
 
-import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
@@ -18,117 +17,42 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { PasswordInput } from '@/components/password-input';
 import { SelectDropdown } from '@/components/select-dropdown';
 import { roles } from '../data';
-import { type User } from '../schemas';
+import { addUserFormSchema, type AddUserFormData } from '../schemas';
+import { useUsers } from './users-provider';
 
-const formSchema = z
-	.object({
-		firstName: z.string().min(1, 'First Name is required.'),
-		lastName: z.string().min(1, 'Last Name is required.'),
-		username: z.string().min(1, 'Username is required.'),
-		phoneNumber: z.string().min(1, 'Phone number is required.'),
-		email: z.email({
-			error: iss => (iss.input === '' ? 'Email is required.' : undefined),
-		}),
-		password: z.string().transform(pwd => pwd.trim()),
-		role: z.string().min(1, 'Role is required.'),
-		confirmPassword: z.string().transform(pwd => pwd.trim()),
-		isEdit: z.boolean(),
-	})
-	.refine(
-		data => {
-			if (data.isEdit && !data.password) return true;
-			return data.password.length > 0;
-		},
-		{
-			message: 'Password is required.',
-			path: ['password'],
-		}
-	)
-	.refine(
-		({ isEdit, password }) => {
-			if (isEdit && !password) return true;
-			return password.length >= 8;
-		},
-		{
-			message: 'Password must be at least 8 characters long.',
-			path: ['password'],
-		}
-	)
-	.refine(
-		({ isEdit, password }) => {
-			if (isEdit && !password) return true;
-			return /[a-z]/.test(password);
-		},
-		{
-			message: 'Password must contain at least one lowercase letter.',
-			path: ['password'],
-		}
-	)
-	.refine(
-		({ isEdit, password }) => {
-			if (isEdit && !password) return true;
-			return /\d/.test(password);
-		},
-		{
-			message: 'Password must contain at least one number.',
-			path: ['password'],
-		}
-	)
-	.refine(
-		({ isEdit, password, confirmPassword }) => {
-			if (isEdit && !password) return true;
-			return password === confirmPassword;
-		},
-		{
-			message: "Passwords don't match.",
-			path: ['confirmPassword'],
-		}
-	);
-type UserForm = z.infer<typeof formSchema>;
-
-type UserActionDialogProps = {
-	currentRow?: User;
+type AddUserDialogProps = {
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
 };
 
-export function UsersActionDialog({ currentRow, open, onOpenChange }: UserActionDialogProps) {
-	const isEdit = !!currentRow;
+export function AddUserDialog({ open, onOpenChange }: AddUserDialogProps) {
+	const { setOpen, setCurrentRow } = useUsers();
 	const {
 		register,
 		handleSubmit,
-		formState: { errors, dirtyFields },
+		formState: { errors },
 		reset,
 		setValue,
-	} = useForm<UserForm>({
-		resolver: zodResolver(formSchema),
-		defaultValues: isEdit
-			? {
-					...currentRow,
-					password: '',
-					confirmPassword: '',
-					isEdit,
-			  }
-			: {
-					firstName: '',
-					lastName: '',
-					username: '',
-					email: '',
-					role: '',
-					phoneNumber: '',
-					password: '',
-					confirmPassword: '',
-					isEdit,
-			  },
+	} = useForm<AddUserFormData>({
+		resolver: zodResolver(addUserFormSchema),
+		defaultValues: {
+			firstName: '',
+			lastName: '',
+			username: '',
+			email: '',
+			phoneNumber: '',
+			role: '',
+			password: '',
+			confirmPassword: '',
+		},
 	});
 
-	const onSubmit = (values: UserForm) => {
+	const onSubmit = (values: AddUserFormData) => {
 		reset();
-		console.log(values);
-		onOpenChange(false);
+		console.log('Add user:', values);
+		setOpen(null);
+		setCurrentRow(null);
 	};
-
-	const isPasswordTouched = !!dirtyFields.password;
 
 	return (
 		<Dialog
@@ -140,14 +64,12 @@ export function UsersActionDialog({ currentRow, open, onOpenChange }: UserAction
 		>
 			<DialogContent className="sm:max-w-lg">
 				<DialogHeader className="text-start">
-					<DialogTitle>{isEdit ? 'Edit User' : 'Add New User'}</DialogTitle>
-					<DialogDescription>
-						{isEdit ? 'Update the user here. ' : 'Create new user here. '}
-						Click save when you&apos;re done.
-					</DialogDescription>
+					<DialogTitle>Add New User</DialogTitle>
+					<DialogDescription>Create new user here. Click save when you&apos;re done.</DialogDescription>
 				</DialogHeader>
 				<div className="h-105 w-[calc(100%+0.75rem)] overflow-y-auto py-1 pe-3">
-					<form id="user-form" onSubmit={handleSubmit(onSubmit)} className="space-y-4 px-0.5">
+					<form id="add-user-form" onSubmit={handleSubmit(onSubmit)} className="space-y-4 px-0.5">
+						{/* First Name */}
 						<div className="grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1">
 							<Label className="col-span-2 text-end">First Name</Label>
 							<div className="col-span-4">
@@ -168,6 +90,7 @@ export function UsersActionDialog({ currentRow, open, onOpenChange }: UserAction
 							</div>
 						</div>
 
+						{/* Last Name */}
 						<div className="grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1">
 							<Label className="col-span-2 text-end">Last Name</Label>
 							<div className="col-span-4">
@@ -188,6 +111,7 @@ export function UsersActionDialog({ currentRow, open, onOpenChange }: UserAction
 							</div>
 						</div>
 
+						{/* Username */}
 						<div className="grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1">
 							<Label className="col-span-2 text-end">Username</Label>
 							<div className="col-span-4">
@@ -204,6 +128,7 @@ export function UsersActionDialog({ currentRow, open, onOpenChange }: UserAction
 							</div>
 						</div>
 
+						{/* Email */}
 						<div className="grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1">
 							<Label className="col-span-2 text-end">Email</Label>
 							<div className="col-span-4">
@@ -220,6 +145,7 @@ export function UsersActionDialog({ currentRow, open, onOpenChange }: UserAction
 							</div>
 						</div>
 
+						{/* Phone Number */}
 						<div className="grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1">
 							<Label className="col-span-2 text-end">Phone Number</Label>
 							<div className="col-span-4">
@@ -236,6 +162,7 @@ export function UsersActionDialog({ currentRow, open, onOpenChange }: UserAction
 							</div>
 						</div>
 
+						{/* Role */}
 						<div className="grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1">
 							<Label className="col-span-2 text-end">Role</Label>
 							<div className="col-span-4">
@@ -254,6 +181,7 @@ export function UsersActionDialog({ currentRow, open, onOpenChange }: UserAction
 							</div>
 						</div>
 
+						{/* Password */}
 						<div className="grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1">
 							<Label className="col-span-2 text-end">Password</Label>
 							<div className="col-span-4">
@@ -273,6 +201,7 @@ export function UsersActionDialog({ currentRow, open, onOpenChange }: UserAction
 							</div>
 						</div>
 
+						{/* Confirm Password */}
 						<div className="grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1">
 							<Label className="col-span-2 text-end">Confirm Password</Label>
 							<div className="col-span-4">
@@ -280,7 +209,6 @@ export function UsersActionDialog({ currentRow, open, onOpenChange }: UserAction
 									<Tooltip open={!!errors.confirmPassword} delayDuration={0}>
 										<TooltipTrigger asChild>
 											<PasswordInput
-												disabled={!isPasswordTouched}
 												placeholder="e.g., S3cur3P@ssw0rd"
 												{...register('confirmPassword')}
 											/>
@@ -295,8 +223,8 @@ export function UsersActionDialog({ currentRow, open, onOpenChange }: UserAction
 					</form>
 				</div>
 				<DialogFooter>
-					<Button type="submit" form="user-form">
-						Save changes
+					<Button type="submit" form="add-user-form">
+						Save User
 					</Button>
 				</DialogFooter>
 			</DialogContent>

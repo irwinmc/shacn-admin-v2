@@ -20,6 +20,7 @@ import { roles } from '../data';
 import { type User } from '../schemas';
 import { DataTableBulkActions } from './data-table-bulk-actions';
 import { usersColumns as columns } from './users-columns';
+import { getColumnMeta } from '../types/columns';
 
 type DataTableProps = {
 	data: User[];
@@ -93,14 +94,15 @@ export function UsersTable({ data }: DataTableProps) {
 						{table.getHeaderGroups().map(headerGroup => (
 							<TableRow key={headerGroup.id} className="group/row">
 								{headerGroup.headers.map(header => {
+									const { className, thClassName } = getColumnMeta(header.column.columnDef.meta);
 									return (
 										<TableHead
 											key={header.id}
 											colSpan={header.colSpan}
 											className={cn(
 												'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
-												header.column.columnDef.meta?.className,
-												header.column.columnDef.meta?.thClassName
+												className,
+												thClassName
 											)}
 										>
 											{header.isPlaceholder
@@ -120,18 +122,21 @@ export function UsersTable({ data }: DataTableProps) {
 									data-state={row.getIsSelected() && 'selected'}
 									className="group/row"
 								>
-									{row.getVisibleCells().map(cell => (
-										<TableCell
-											key={cell.id}
-											className={cn(
-												'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
-												cell.column.columnDef.meta?.className,
-												cell.column.columnDef.meta?.tdClassName
-											)}
-										>
-											{flexRender(cell.column.columnDef.cell, cell.getContext())}
-										</TableCell>
-									))}
+									{row.getVisibleCells().map(cell => {
+										const { className, tdClassName } = getColumnMeta(cell.column.columnDef.meta);
+										return (
+											<TableCell
+												key={cell.id}
+												className={cn(
+													'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
+													className,
+													tdClassName
+												)}
+											>
+												{flexRender(cell.column.columnDef.cell, cell.getContext())}
+											</TableCell>
+										);
+									})}
 								</TableRow>
 							))
 						) : (

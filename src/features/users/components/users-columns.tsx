@@ -1,14 +1,13 @@
-import { type ColumnDef } from '@tanstack/react-table';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { DataTableColumnHeader } from '@/components/data-table';
 import { LongText } from '@/components/long-text';
 import { callTypes, roles } from '../data';
-import { type User } from '../schemas';
 import { DataTableRowActions } from './data-table-row-actions';
+import type { UserColumnDef } from '../types/columns';
 
-export const usersColumns: ColumnDef<User>[] = [
+export const usersColumns: UserColumnDef[] = [
 	{
 		id: 'select',
 		header: ({ table }) => (
