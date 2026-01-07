@@ -1,5 +1,5 @@
-import { AddUserDialog } from './add-user-dialog';
-import { EditUserDialog } from './edit-user-dialog';
+import { AddUserDialog } from './user-add-dialog';
+import { EditUserDialog } from './user-edit-dialog';
 import { UsersDeleteDialog } from './users-delete-dialog';
 import { UsersInviteDialog } from './users-invite-dialog';
 import { useUsers } from './users-provider';

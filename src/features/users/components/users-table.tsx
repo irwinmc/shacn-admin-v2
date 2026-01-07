@@ -4,6 +4,7 @@ import {
 	type VisibilityState,
 	type ColumnFiltersState,
 	type PaginationState,
+	type ColumnDef,
 	flexRender,
 	getCoreRowModel,
 	getFacetedRowModel,
@@ -20,7 +21,6 @@ import { roles } from '../data';
 import { type User } from '../schemas';
 import { DataTableBulkActions } from './data-table-bulk-actions';
 import { usersColumns as columns } from './users-columns';
-import { getColumnMeta } from '../types/columns';
 
 type DataTableProps = {
 	data: User[];
@@ -37,7 +37,7 @@ export function UsersTable({ data }: DataTableProps) {
 	// eslint-disable-next-line react-hooks/incompatible-library
 	const table = useReactTable({
 		data,
-		columns,
+		columns: columns as ColumnDef<typeof data[0]>[],
 		state: {
 			sorting,
 			pagination,
@@ -94,7 +94,8 @@ export function UsersTable({ data }: DataTableProps) {
 						{table.getHeaderGroups().map(headerGroup => (
 							<TableRow key={headerGroup.id} className="group/row">
 								{headerGroup.headers.map(header => {
-									const { className, thClassName } = getColumnMeta(header.column.columnDef.meta);
+									// eslint-disable-next-line @typescript-eslint/no-explicit-any
+									const { className, thClassName } = (header.column.columnDef.meta as any) || {};
 									return (
 										<TableHead
 											key={header.id}
@@ -123,7 +124,8 @@ export function UsersTable({ data }: DataTableProps) {
 									className="group/row"
 								>
 									{row.getVisibleCells().map(cell => {
-										const { className, tdClassName } = getColumnMeta(cell.column.columnDef.meta);
+										// eslint-disable-next-line @typescript-eslint/no-explicit-any
+										const { className, tdClassName } = (cell.column.columnDef.meta as any) || {};
 										return (
 											<TableCell
 												key={cell.id}
