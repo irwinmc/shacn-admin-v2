@@ -2,12 +2,10 @@ import { Outlet } from '@tanstack/react-router';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/layouts/app-sidebar';
 import { SiteHeader } from '@/components/layouts/site-header';
-import { SkipToMain } from '@/components/skip-to-main';
 
 export function AuthenticatedLayout() {
 	return (
 		<SidebarProvider>
-			<SkipToMain />
 			<AppSidebar />
 			<SidebarInset>
 				<SiteHeader />

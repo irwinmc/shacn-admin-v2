@@ -2,13 +2,13 @@ import { useRouter } from '@tanstack/react-router';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { GalleryVerticalEnd } from 'lucide-react';
-import { Tooltip } from 'react-tooltip';
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useAuthStore } from '@/stores/auth-store';
 
 import { loginSchema, type LoginFormData } from '../schemas';
@@ -57,27 +57,16 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
 							</div>
 							<div className="grid gap-3">
 								<Label htmlFor="email">Email</Label>
-								<Input
-									id="email"
-									type="email"
-									placeholder="test@example.com"
-									{...register('email')}
-									aria-invalid={!!errors.email}
-									className={errors.email ? 'border-destructive' : ''}
-									data-tooltip-id="email-error"
-									data-tooltip-content={errors.email?.message}
-									data-tooltip-place="right"
-									data-tooltip-hidden={!errors.email}
-								/>
-								<Tooltip
-									id="email-error"
-									style={{
-										backgroundColor: '#ff0000',
-										color: '#fff',
-										zIndex: 9999,
-										borderRadius: '0.875rem',
-									}}
-								/>
+								<TooltipProvider>
+									<Tooltip open={!!errors.email} delayDuration={0}>
+										<TooltipTrigger asChild>
+											<Input id="email" placeholder="test@example.com" {...register('email')} />
+										</TooltipTrigger>
+										{errors.email && (
+											<TooltipContent side="top">{errors.email.message}</TooltipContent>
+										)}
+									</Tooltip>
+								</TooltipProvider>
 							</div>
 							<div className="grid gap-3">
 								<div className="flex items-center">
@@ -89,26 +78,16 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
 										Forgot your password?
 									</a>
 								</div>
-								<Input
-									id="password"
-									type="password"
-									{...register('password')}
-									aria-invalid={!!errors.password}
-									className={errors.password ? 'border-destructive' : ''}
-									data-tooltip-id="password-error"
-									data-tooltip-content={errors.password?.message}
-									data-tooltip-place="right"
-									data-tooltip-hidden={!errors.password}
-								/>
-								<Tooltip
-									id="password-error"
-									style={{
-										backgroundColor: '#ff0000',
-										color: '#fff',
-										zIndex: 9999,
-										borderRadius: '0.875rem',
-									}}
-								/>
+								<TooltipProvider>
+									<Tooltip open={!!errors.password} delayDuration={0}>
+										<TooltipTrigger asChild>
+											<Input id="password" type="password" {...register('password')} />
+										</TooltipTrigger>
+										{errors.password && (
+											<TooltipContent side="top">{errors.password.message}</TooltipContent>
+										)}
+									</Tooltip>
+								</TooltipProvider>
 							</div>
 							<Button type="submit" className="w-full cursor-pointer">
 								Login
