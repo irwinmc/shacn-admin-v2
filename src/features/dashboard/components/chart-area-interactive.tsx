@@ -33,27 +33,24 @@ export function ChartAreaInteractive() {
 		}
 	}, [isMobile]);
 
-	const filteredData = chartData.filter(item => {
-		const date = new Date(item.date);
+	const filteredData = React.useMemo(() => {
 		const referenceDate = new Date('2024-06-30');
-		let daysToSubtract = 90;
-		if (timeRange === '30d') {
-			daysToSubtract = 30;
-		} else if (timeRange === '7d') {
-			daysToSubtract = 7;
-		}
+		const daysMap = { '7d': 7, '30d': 30, '90d': 90 };
+		const daysToSubtract = daysMap[timeRange as keyof typeof daysMap] || 90;
+
 		const startDate = new Date(referenceDate);
 		startDate.setDate(startDate.getDate() - daysToSubtract);
-		return date >= startDate;
-	});
+
+		return chartData.filter(item => new Date(item.date) >= startDate);
+	}, [timeRange]);
 
 	return (
-		<Card className="@container/card">
+		<Card>
 			<CardHeader>
 				<CardTitle>Total Visitors</CardTitle>
 				<CardDescription>
-					<span className="hidden @[540px]/card:block">Total for the last 3 months</span>
-					<span className="@[540px]/card:hidden">Last 3 months</span>
+					<span className="hidden md:inline">Total for the last 3 months</span>
+					<span className="inline md:hidden">Last 3 months</span>
 				</CardDescription>
 				<CardAction>
 					<ToggleGroup
@@ -61,18 +58,14 @@ export function ChartAreaInteractive() {
 						value={timeRange}
 						onValueChange={setTimeRange}
 						variant="outline"
-						className="hidden *:data-[slot=toggle-group-item]:!px-4 @[767px]/card:flex"
+						className="hidden md:flex"
 					>
 						<ToggleGroupItem value="90d">Last 3 months</ToggleGroupItem>
 						<ToggleGroupItem value="30d">Last 30 days</ToggleGroupItem>
 						<ToggleGroupItem value="7d">Last 7 days</ToggleGroupItem>
 					</ToggleGroup>
 					<Select value={timeRange} onValueChange={setTimeRange}>
-						<SelectTrigger
-							className="flex w-40 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate @[767px]/card:hidden"
-							size="sm"
-							aria-label="Select a value"
-						>
+						<SelectTrigger className="md:hidden" size="sm" aria-label="Select a value">
 							<SelectValue placeholder="Last 3 months" />
 						</SelectTrigger>
 						<SelectContent className="rounded-xl">
