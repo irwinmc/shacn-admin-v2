@@ -2,6 +2,7 @@ import { useRouter } from '@tanstack/react-router';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { GalleryVerticalEnd } from 'lucide-react';
+import { Tooltip } from 'react-tooltip';
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -62,8 +63,21 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
 									placeholder="test@example.com"
 									{...register('email')}
 									aria-invalid={!!errors.email}
+									className={errors.email ? 'border-destructive' : ''}
+									data-tooltip-id="email-error"
+									data-tooltip-content={errors.email?.message}
+									data-tooltip-place="right"
+									data-tooltip-hidden={!errors.email}
 								/>
-								{errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
+								<Tooltip
+									id="email-error"
+									style={{
+										backgroundColor: '#ff0000',
+										color: '#fff',
+										zIndex: 9999,
+										borderRadius: '0.875rem',
+									}}
+								/>
 							</div>
 							<div className="grid gap-3">
 								<div className="flex items-center">
@@ -80,10 +94,21 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
 									type="password"
 									{...register('password')}
 									aria-invalid={!!errors.password}
+									className={errors.password ? 'border-destructive' : ''}
+									data-tooltip-id="password-error"
+									data-tooltip-content={errors.password?.message}
+									data-tooltip-place="right"
+									data-tooltip-hidden={!errors.password}
 								/>
-								{errors.password && (
-									<p className="text-sm text-destructive">{errors.password.message}</p>
-								)}
+								<Tooltip
+									id="password-error"
+									style={{
+										backgroundColor: '#ff0000',
+										color: '#fff',
+										zIndex: 9999,
+										borderRadius: '0.875rem',
+									}}
+								/>
 							</div>
 							<Button type="submit" className="w-full cursor-pointer">
 								Login
