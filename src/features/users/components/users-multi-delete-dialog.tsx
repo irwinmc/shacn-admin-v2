@@ -21,7 +21,7 @@ export function UsersMultiDeleteDialog<TData>({ open, onOpenChange, table }: Use
 
 	const selectedRows = table.getFilteredSelectedRowModel().rows;
 
-	const handleDelete = () => {
+	const onDelete = () => {
 		if (value.trim() !== CONFIRM_WORD) {
 			toast.error(`Please type "${CONFIRM_WORD}" to confirm.`);
 			return;
@@ -44,7 +44,7 @@ export function UsersMultiDeleteDialog<TData>({ open, onOpenChange, table }: Use
 		<ConfirmDialog
 			open={open}
 			onOpenChange={onOpenChange}
-			handleConfirm={handleDelete}
+			onConfirm={onDelete}
 			disabled={value.trim() !== CONFIRM_WORD}
 			title={
 				<span className="text-destructive">

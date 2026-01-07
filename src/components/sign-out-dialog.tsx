@@ -11,7 +11,7 @@ export function SignOutDialog({ open, onOpenChange }: SignOutDialogProps) {
 	const navigate = useNavigate();
 	const { reset } = useAuthStore();
 
-	const handleSignOut = () => {
+	const onSignOut = () => {
 		reset();
 
 		navigate({
@@ -28,7 +28,7 @@ export function SignOutDialog({ open, onOpenChange }: SignOutDialogProps) {
 			desc="Are you sure you want to sign out? You will need to sign in again to access your account."
 			confirmText="Sign out"
 			destructive
-			handleConfirm={handleSignOut}
+			onConfirm={onSignOut}
 			className="sm:max-w-sm"
 		/>
 	);

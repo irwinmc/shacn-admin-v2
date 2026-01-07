@@ -15,7 +15,7 @@ type UserDeleteDialogProps = {
 export function UsersDeleteDialog({ open, onOpenChange, currentRow }: UserDeleteDialogProps) {
 	const [value, setValue] = useState('');
 
-	const handleDelete = () => {
+	const onDelete = () => {
 		if (value.trim() !== currentRow.username) return;
 
 		onOpenChange(false);
@@ -26,7 +26,7 @@ export function UsersDeleteDialog({ open, onOpenChange, currentRow }: UserDelete
 		<ConfirmDialog
 			open={open}
 			onOpenChange={onOpenChange}
-			handleConfirm={handleDelete}
+			onConfirm={onDelete}
 			disabled={value.trim() !== currentRow.username}
 			title={
 				<span className="text-destructive">

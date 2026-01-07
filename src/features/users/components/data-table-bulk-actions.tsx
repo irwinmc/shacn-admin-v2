@@ -17,7 +17,7 @@ export function DataTableBulkActions<TData>({ table }: DataTableBulkActionsProps
 	const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 	const selectedRows = table.getFilteredSelectedRowModel().rows;
 
-	const handleBulkStatusChange = (status: 'active' | 'inactive') => {
+	const onBulkStatusChange = (status: 'active' | 'inactive') => {
 		const selectedUsers = selectedRows.map(row => row.original as User);
 		toast.promise(sleep(2000), {
 			loading: `${status === 'active' ? 'Activating' : 'Deactivating'} users...`,
@@ -32,7 +32,7 @@ export function DataTableBulkActions<TData>({ table }: DataTableBulkActionsProps
 		table.resetRowSelection();
 	};
 
-	const handleBulkInvite = () => {
+	const onBulkInvite = () => {
 		const selectedUsers = selectedRows.map(row => row.original as User);
 		toast.promise(sleep(2000), {
 			loading: 'Inviting users...',
@@ -53,7 +53,7 @@ export function DataTableBulkActions<TData>({ table }: DataTableBulkActionsProps
 						<Button
 							variant="outline"
 							size="icon"
-							onClick={handleBulkInvite}
+							onClick={onBulkInvite}
 							className="size-8"
 							aria-label="Invite selected users"
 							title="Invite selected users"
@@ -72,7 +72,7 @@ export function DataTableBulkActions<TData>({ table }: DataTableBulkActionsProps
 						<Button
 							variant="outline"
 							size="icon"
-							onClick={() => handleBulkStatusChange('active')}
+							onClick={() => onBulkStatusChange('active')}
 							className="size-8"
 							aria-label="Activate selected users"
 							title="Activate selected users"
@@ -91,7 +91,7 @@ export function DataTableBulkActions<TData>({ table }: DataTableBulkActionsProps
 						<Button
 							variant="outline"
 							size="icon"
-							onClick={() => handleBulkStatusChange('inactive')}
+							onClick={() => onBulkStatusChange('inactive')}
 							className="size-8"
 							aria-label="Deactivate selected users"
 							title="Deactivate selected users"
