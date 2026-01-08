@@ -4,6 +4,7 @@ import { useAuthStore } from '@/stores/auth-store';
 import { AuthenticatedLayout } from '@/components/layouts/authenticated-layout';
 import { Dashboard } from '@/features/dashboard';
 import { Users } from '@/features/users';
+import { AccountSettings } from '@/features/settings';
 
 export function createProtectedRoutes(rootRoute: typeof RootRouteType) {
 	// 受保护的根路由（作为 Layout 路由）
@@ -36,7 +37,14 @@ export function createProtectedRoutes(rootRoute: typeof RootRouteType) {
 		component: Users,
 	});
 
+	// 设置
+	const settingsRoute = createRoute({
+		getParentRoute: () => protectedRoute,
+		path: '/settings',
+		component: AccountSettings,
+	});
+
 	return {
-		protectedRoute: protectedRoute.addChildren([indexRoute, usersRoute]),
+		protectedRoute: protectedRoute.addChildren([indexRoute, usersRoute, settingsRoute]),
 	};
 }
