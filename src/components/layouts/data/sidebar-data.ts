@@ -1,13 +1,4 @@
-import {
-	LayoutDashboard,
-	HelpCircle,
-	Package,
-	Settings,
-	Users,
-	AudioWaveform,
-	Command,
-	GalleryVerticalEnd,
-} from 'lucide-react';
+import { LayoutDashboard, Package, Settings, Users, AudioWaveform, Command, GalleryVerticalEnd } from 'lucide-react';
 import { type SidebarData } from '../types';
 
 export const sidebarData: SidebarData = {
@@ -71,11 +62,6 @@ export const sidebarData: SidebarData = {
 					title: 'Settings',
 					url: '/settings',
 					icon: Settings,
-				},
-				{
-					title: 'Help Center',
-					url: '/help-center',
-					icon: HelpCircle,
 				},
 			],
 		},
