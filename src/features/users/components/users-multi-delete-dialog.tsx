@@ -74,7 +74,7 @@ export function UsersMultiDeleteDialog<TData>({ open, onOpenChange, table }: Use
 					</Alert>
 				</div>
 			}
-			confirmText="Delete"
+			confirmButtonText="Delete"
 			destructive
 		/>
 	);

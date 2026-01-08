@@ -58,7 +58,7 @@ export function UsersDeleteDialog({ open, onOpenChange, currentRow }: UserDelete
 					</Alert>
 				</div>
 			}
-			confirmText="Delete"
+			confirmButtonText="Delete"
 			destructive
 		/>
 	);

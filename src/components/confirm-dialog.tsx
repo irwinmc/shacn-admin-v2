@@ -16,8 +16,8 @@ type ConfirmDialogProps = {
 	title: React.ReactNode;
 	disabled?: boolean;
 	desc: React.JSX.Element | string;
-	cancelBtnText?: string;
-	confirmText?: React.ReactNode;
+	cancelButtonText?: string;
+	confirmButtonText?: React.ReactNode;
 	destructive?: boolean;
 	onConfirm: () => void;
 	isLoading?: boolean;
@@ -31,8 +31,8 @@ export function ConfirmDialog(props: ConfirmDialogProps) {
 		desc,
 		children,
 		className,
-		confirmText,
-		cancelBtnText,
+		confirmButtonText,
+		cancelButtonText,
 		destructive,
 		isLoading,
 		disabled = false,
@@ -45,18 +45,18 @@ export function ConfirmDialog(props: ConfirmDialogProps) {
 				<AlertDialogHeader className="text-start">
 					<AlertDialogTitle>{title}</AlertDialogTitle>
 					<AlertDialogDescription asChild>
-						<div>{desc}</div>
+						<div className="w-full">{desc}</div>
 					</AlertDialogDescription>
 				</AlertDialogHeader>
 				{children}
 				<AlertDialogFooter>
-					<AlertDialogCancel disabled={isLoading}>{cancelBtnText ?? 'Cancel'}</AlertDialogCancel>
+					<AlertDialogCancel disabled={isLoading}>{cancelButtonText ?? 'Cancel'}</AlertDialogCancel>
 					<Button
 						variant={destructive ? 'destructive' : 'default'}
 						onClick={onConfirm}
 						disabled={disabled || isLoading}
 					>
-						{confirmText ?? 'Continue'}
+						{confirmButtonText ?? 'Continue'}
 					</Button>
 				</AlertDialogFooter>
 			</AlertDialogContent>
