@@ -41,7 +41,7 @@ const processQueue = (error: unknown, token: string | null = null) => {
  * 刷新访问令牌
  */
 const refreshAccessToken = async (): Promise<string> => {
-	const { refreshToken } = useAuthStore.getState();
+	const { refreshToken, setAccessToken, setRefreshToken, reset } = useAuthStore.getState();
 
 	if (!refreshToken) {
 		throw new Error('No refresh token available');
@@ -62,8 +62,6 @@ const refreshAccessToken = async (): Promise<string> => {
 
 		const { accessToken, refreshToken: newRefreshToken } = response.data.data;
 
-		// 更新store中的tokens（自动持久化到localStorage）
-		const { setAccessToken, setRefreshToken } = useAuthStore.getState();
 		setAccessToken(accessToken);
 
 		if (newRefreshToken) {
@@ -72,8 +70,6 @@ const refreshAccessToken = async (): Promise<string> => {
 
 		return accessToken;
 	} catch (error) {
-		// 刷新失败，清除认证信息并跳转到登录页
-		const { reset } = useAuthStore.getState();
 		reset();
 
 		window.location.href = '/login';
@@ -111,6 +107,7 @@ apiInstance.interceptors.response.use(
 
 		// 处理 401 错误 - Token 过期或无效
 		if (error.response?.status === 401) {
+			const { reset } = useAuthStore.getState();
 			const requestUrl = originalRequest?.url || '';
 			const isAuthRequest =
 				requestUrl.includes('/auth/login') ||
@@ -120,7 +117,6 @@ apiInstance.interceptors.response.use(
 
 			// 如果是认证请求（登录、注册、刷新）返回401，则直接退出
 			if (isAuthRequest) {
-				const { reset } = useAuthStore.getState();
 				reset();
 
 				if (!isOnLoginPage) {
@@ -161,7 +157,6 @@ apiInstance.interceptors.response.use(
 				}
 			} else {
 				// 已经重试过的请求仍然401，说明刷新失败
-				const { reset } = useAuthStore.getState();
 				reset();
 
 				if (!isOnLoginPage) {

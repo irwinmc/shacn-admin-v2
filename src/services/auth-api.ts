@@ -81,10 +81,8 @@ export const logout = async (): Promise<void> => {
 	try {
 		await apiInstance.post('/auth/logout');
 	} catch (error) {
-		// 即使登出API失败，也要清理本地状态
 		console.warn('Logout API call failed, but proceeding with local cleanup:', error);
 	} finally {
-		// 清理本地状态（会自动清除localStorage中的数据）
 		const { reset } = useAuthStore.getState();
 		reset();
 	}
