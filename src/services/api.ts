@@ -48,13 +48,17 @@ const refreshAccessToken = async (): Promise<string> => {
 	}
 
 	try {
-		const response = await axios.post(`${API_CONFIG.BASE_URL}/auth/refresh`, {
-			refreshToken,
-		}, {
-			headers: {
-				'Content-Type': 'application/json',
+		const response = await axios.post(
+			`${API_CONFIG.BASE_URL}/auth/refresh`,
+			{
+				refreshToken,
 			},
-		});
+			{
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			}
+		);
 
 		const { accessToken, refreshToken: newRefreshToken } = response.data.data;
 
@@ -90,7 +94,7 @@ apiInstance.interceptors.request.use(
 
 		return config;
 	},
-	(error) => {
+	error => {
 		return Promise.reject(error);
 	}
 );
@@ -108,7 +112,8 @@ apiInstance.interceptors.response.use(
 		// 处理 401 错误 - Token 过期或无效
 		if (error.response?.status === 401) {
 			const requestUrl = originalRequest?.url || '';
-			const isAuthRequest = requestUrl.includes('/auth/login') ||
+			const isAuthRequest =
+				requestUrl.includes('/auth/login') ||
 				requestUrl.includes('/auth/register') ||
 				requestUrl.includes('/auth/refresh');
 			const isOnLoginPage = window.location.pathname === '/login';
@@ -130,12 +135,14 @@ apiInstance.interceptors.response.use(
 					// 如果正在刷新token，将请求加入队列等待
 					return new Promise((resolve, reject) => {
 						failedQueue.push({ resolve, reject });
-					}).then(token => {
-						originalRequest.headers.Authorization = `Bearer ${token}`;
-						return apiInstance(originalRequest);
-					}).catch(err => {
-						return Promise.reject(err);
-					});
+					})
+						.then(token => {
+							originalRequest.headers.Authorization = `Bearer ${token}`;
+							return apiInstance(originalRequest);
+						})
+						.catch(err => {
+							return Promise.reject(err);
+						});
 				}
 
 				originalRequest._retry = true;
