@@ -2,8 +2,11 @@ import { Outlet } from '@tanstack/react-router';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/layouts/app-sidebar';
 import { SiteHeader } from '@/components/layouts/site-header';
+import { useAuthUnauthorized } from '@/hooks/use-auth-unauthorized';
 
 export function AuthenticatedLayout() {
+	useAuthUnauthorized();
+
 	return (
 		<SidebarProvider>
 			<AppSidebar />

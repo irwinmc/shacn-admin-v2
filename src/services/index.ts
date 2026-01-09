@@ -4,7 +4,7 @@
  */
 
 // API 实例
-export { apiClient } from './api';
+export { apiClient, authEvents } from './api';
 
 // Query Client
 export { queryClient } from './query-client';

@@ -22,10 +22,21 @@ export async function refreshAccessToken(): Promise<string> {
 		});
 	}
 
+	const { refreshToken } = useAuthStore.getState();
+
+	if (!refreshToken) {
+		useAuthStore.getState().reset();
+		authEvents.emit('unauthorized');
+		throw new Error('No refresh token available');
+	}
+
 	isRefreshing = true;
 
 	try {
-		const res = await refreshAxios.post(API_ENDPOINTS.auth.refresh);
+		const res = await refreshAxios.post(API_ENDPOINTS.auth.refresh, {
+			refreshToken,
+		});
+
 		const accessToken = res.data?.data?.accessToken;
 
 		if (!accessToken) {
@@ -34,7 +45,6 @@ export async function refreshAccessToken(): Promise<string> {
 
 		useAuthStore.getState().setAccessToken(accessToken);
 
-		// 通知所有等待的请求刷新成功
 		queue.forEach(({ resolve }) => resolve(accessToken));
 		queue = [];
 

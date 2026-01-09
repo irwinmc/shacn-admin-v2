@@ -1,6 +1,6 @@
 # Services 目录完善分析报告
 
-**文档版本:** v1.1
+**文档版本:** v1.3
 **最后更新:** 2026-01-09
 **状态:** 进行中
 
@@ -43,93 +43,9 @@ src/services/
 
 #### 🔴 Priority 1 - 必修（影响功能）
 
-##### 问题1.1: Token刷新Promise处理缺陷 - **严重**
-- **文件:** `src/services/api/auth-refresh-manager.ts` (第6-54行)
-- **问题描述:** Queue中的promise缺少reject机制
-- **原始问题代码:**
-  ```typescript
-  // 问题1: Queue结构不完善
-  let queue: Array<(token: string) => void> = [];
-
-  if (isRefreshing) {
-      return new Promise(resolve => queue.push(resolve));  // ❌ 只有resolve，没有reject
-  }
-
-  // 问题2: 错误处理时直接清空queue
-  catch (err) {
-      queue = [];  // ❌ 直接清空queue，但pending的promise不会被reject
-      // ...
-  }
-  ```
-- **修复内容:**
-  ✅ **1. 改进Queue结构** (第7-10行)
-  ```typescript
-  let queue: Array<{
-      resolve: (token: string) => void;
-      reject: (error: Error) => void;
-  }> = [];
-  ```
-
-  ✅ **2. 添加Promise时包含reject** (第19-22行)
-  ```typescript
-  if (isRefreshing) {
-      return new Promise((resolve, reject) => {
-          queue.push({ resolve, reject });
-      });
-  }
-  ```
-
-  ✅ **3. 成功时通知所有pending promise** (第37-39行)
-  ```typescript
-  // 通知所有等待的请求刷新成功
-  queue.forEach(({ resolve }) => resolve(accessToken));
-  queue = [];
-  ```
-
-  ✅ **4. 错误时Reject所有pending promise** (第43-46行)
-  ```typescript
-  // 拒绝所有等待的请求
-  const error = err instanceof Error ? err : new Error('Token refresh failed');
-  queue.forEach(({ reject }) => reject(error));
-  queue = [];
-  ```
-
-- **后果（修复前）:**
-  - 如果token刷新失败，所有在queue中等待的请求会**无限期挂起**
-  - 可能导致UI冻结、内存泄漏
-  - 用户无法得知刷新失败
-
-- **改进点（修复后）:**
-  - ✅ 所有pending的promise现在都会被正确通知（resolve或reject）
-  - ✅ 错误时清晰的错误信息
-  - ✅ 不会再有无限挂起的promise
-  - ✅ 消费方可以正确处理刷新失败的情况
-
-- **状态:** ✅ 已修复 (2026-01-09)
-
----
-
-##### 问题1.2: RefreshToken参数不匹配 - **中等**
-- **文件:** `src/services/auth-api.ts` vs `src/services/api/auth-refresh-manager.ts`
-- **问题描述:** 两处刷新逻辑参数传递不一致
-- **对比:**
-  ```typescript
-  // auth-api.ts:71-75 - 定义的接口
-  export const refreshToken = async (refreshToken: string) => {
-      await apiClient.post(API_ENDPOINTS.auth.refresh, {
-          refreshToken,  // ✅ 传递参数
-      });
-  };
-
-  // auth-refresh-manager.ts:23 - 实际刷新逻辑
-  const res = await refreshAxios.post(API_ENDPOINTS.auth.refresh);
-  // ❌ 没有传递refreshToken参数！
-  ```
-- **后果:**
-  - 如果后端需要refresh_token参数，这个请求会失败
-  - 两处实现逻辑不一致，容易造成维护混乱
-- **修复方案:** 统一从auth-store获取refreshToken，传递给后端
-- **状态:** ❌ 未修复
+✅ **已全部完成：**
+- ✅ 问题1.1: Token刷新Promise处理缺陷
+- ✅ 问题1.2: RefreshToken参数不匹配
 
 ---
 
@@ -209,28 +125,17 @@ src/services/
 - [x] 创建API端点常量管理文件
 - [x] 更新所有文件使用API_ENDPOINTS常量
 - [x] 修复Token刷新Promise处理
-- [ ] 修复RefreshToken参数不匹配
+- [x] 修复RefreshToken参数不匹配
 - [ ] 完善类型定义
 - [ ] 优化导出粒度
 - [ ] 添加用户管理Service
 - [ ] 添加HTTP Wrapper
 
-### 总体完成度: **3/8 (37.5%)**
+### 总体完成度: **4/8 (50%)**
 
 ---
 
 ## 🎯 下一步行动计划
-
-### Phase 1 - 功能修复 (Priority 1)
-1. **修复Token刷新Promise处理**
-   - 改进queue结构，添加reject机制
-   - 添加timeout机制防止无限等待
-   - 更新测试用例
-
-2. **修复RefreshToken参数**
-   - 统一参数传递逻辑
-   - 从auth-store获取refreshToken
-   - 验证后端API一致性
 
 ### Phase 2 - 代码质量提升 (Priority 2)
 3. **完善类型定义**
@@ -248,6 +153,19 @@ src/services/
 ---
 
 ## 📝 修改日志
+
+### v1.3 (2026-01-09)
+- 🧹 删除已完成问题的详细说明
+  - P1级别问题（1.1和1.2）已全部修复
+  - 简化文档结构，删除冗长的修复过程记录
+  - 保留P2、P3级别的待修复问题
+
+### v1.2 (2026-01-09)
+- ✅ **修复问题1.2:** RefreshToken参数不匹配
+  - 从auth-store获取refreshToken
+  - 显式传递refreshToken参数给后端
+  - 添加refreshToken验证，不存在时报错
+- 更新修复进度至50% (P1级别已完全修复)
 
 ### v1.1 (2026-01-09)
 - ✅ **修复问题1.1:** Token刷新Promise处理缺陷
