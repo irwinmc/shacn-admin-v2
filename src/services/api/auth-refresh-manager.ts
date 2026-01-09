@@ -4,7 +4,10 @@ import { useAuthStore } from '@/stores/auth-store';
 import { authEvents } from './auth-events';
 
 let isRefreshing = false;
-let queue: Array<(token: string) => void> = [];
+let queue: Array<{
+	resolve: (token: string) => void;
+	reject: (error: Error) => void;
+}> = [];
 
 const refreshAxios = axios.create({
 	baseURL: API_CONFIG.BASE_URL,
@@ -14,7 +17,9 @@ const refreshAxios = axios.create({
 
 export async function refreshAccessToken(): Promise<string> {
 	if (isRefreshing) {
-		return new Promise(resolve => queue.push(resolve));
+		return new Promise((resolve, reject) => {
+			queue.push({ resolve, reject });
+		});
 	}
 
 	isRefreshing = true;
@@ -29,14 +34,20 @@ export async function refreshAccessToken(): Promise<string> {
 
 		useAuthStore.getState().setAccessToken(accessToken);
 
-		queue.forEach(resolve => resolve(accessToken));
+		// 通知所有等待的请求刷新成功
+		queue.forEach(({ resolve }) => resolve(accessToken));
 		queue = [];
 
 		return accessToken;
 	} catch (err) {
+		// 拒绝所有等待的请求
+		const error = err instanceof Error ? err : new Error('Token refresh failed');
+		queue.forEach(({ reject }) => reject(error));
 		queue = [];
+
 		useAuthStore.getState().reset();
 		authEvents.emit('unauthorized');
+
 		throw err;
 	} finally {
 		isRefreshing = false;
