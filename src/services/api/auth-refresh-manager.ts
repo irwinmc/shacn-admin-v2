@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { API_CONFIG } from '@/constants/config';
+import { API_CONFIG, API_ENDPOINTS } from '@/constants';
 import { useAuthStore } from '@/stores/auth-store';
 import { authEvents } from './auth-events';
 
@@ -20,7 +20,7 @@ export async function refreshAccessToken(): Promise<string> {
 	isRefreshing = true;
 
 	try {
-		const res = await refreshAxios.post('/auth/refresh');
+		const res = await refreshAxios.post(API_ENDPOINTS.auth.refresh);
 		const accessToken = res.data?.data?.accessToken;
 
 		if (!accessToken) {

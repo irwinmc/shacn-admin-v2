@@ -1,5 +1,5 @@
 import axios, { AxiosError, type InternalAxiosRequestConfig } from 'axios';
-import { API_CONFIG } from '@/constants/config';
+import { API_CONFIG, API_ENDPOINTS } from '@/constants';
 import { useAuthStore } from '@/stores/auth-store';
 import { refreshAccessToken } from './auth-refresh-manager';
 import { formatApiError } from './auth-error';
@@ -31,7 +31,7 @@ apiClient.interceptors.response.use(
 		if (
 			error.response?.status === 401 &&
 			!originalRequest._retry &&
-			!originalRequest.url?.includes('/auth/refresh')
+			!originalRequest.url?.includes(API_ENDPOINTS.auth.refresh)
 		) {
 			originalRequest._retry = true;
 
